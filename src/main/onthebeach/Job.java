@@ -14,6 +14,10 @@ public class Job {
 		this.jobId = jobId;
 	}
 	
+	public Job (String jobId) {
+		this.jobId = jobId;
+	}
+	
 	public String getJobId() {
 		return jobId;
 	}
