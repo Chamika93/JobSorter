@@ -1,4 +1,4 @@
-package com.onthebeach;
+package main.onthebeach;
 
 import java.util.ArrayList;
 

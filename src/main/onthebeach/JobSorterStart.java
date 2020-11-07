@@ -1,4 +1,4 @@
-package com.onthebeach;
+package main.onthebeach;
 
 import java.lang.reflect.Array;
 import java.util.ArrayList;
@@ -16,7 +16,30 @@ public class JobSorterStart {
 	public static void main(String[] args) {
 
 		// Get the user input 
+		/**
+		 * In this format
+		 * 
+		 * a =>
+		 * b => c
+		 * c =>
+		 */
 		
+		
+		// Create an 2 dimensional array
+		/**
+		 * { {a} , {b,c}, {c} }
+		 * 
+		 */
+		String[][] processedUserInput = {{"a"},{"b","c"},{"c"}};
+
+		HashMap<String, Job> allJobs = createJobsFromInputs(processedUserInput);
+		ArrayList<String> sortedJobs = jobHandler(allJobs);
+		
+	}
+	
+	
+	public static HashMap<String, Job> createJobsFromInputs (String[][] userInput ) {
+	   
 		// Iterate user input and create job objects with neighbour jobs
 		
 		Job x = new Job ("a", new ArrayList<String>(Arrays.asList("b")));
@@ -34,18 +57,31 @@ public class JobSorterStart {
 		allJobs.put(z.getJobId(), z);
 		allJobs.put(el.getJobId(), el);
 		
-		//sorted jobs
-		ArrayList<String> sortedJobs = new ArrayList<String>();
-		//visited jobs	
-		ArrayList<String> visitedJobs = new ArrayList<String>();
-		
-		// Visit all the jobs recursively according to the topological sort
-		for (Job jobx: allJobs.values()) {
-			vistJob(jobx,sortedJobs, visitedJobs, allJobs );
-		}
-		
+		return allJobs;
 	}
 	
+	
+	/**
+	 * Finds the Sorted Job order given a HashMap of jobs 
+	 * 
+	 * @param allJobs HashMap with all the jobs
+	 * @return Sorted Jobs Arraylist
+	 */
+	public static ArrayList<String> jobHandler(HashMap<String, Job> allJobs) {
+		
+		// sorted jobs
+		ArrayList<String> sortedJobs = new ArrayList<String>();
+
+		// visited jobs
+		ArrayList<String> visitedJobs = new ArrayList<String>();
+
+		// Visit all the jobs recursively according to the topological sort
+		for (Job jobx : allJobs.values()) {
+			vistJob(jobx, sortedJobs, visitedJobs, allJobs);
+		}
+
+		return sortedJobs;
+	}
 	
 	/**
 	 * Visit a job and visit the neighbour jobs recursively  
@@ -77,5 +113,9 @@ public class JobSorterStart {
 		sortedJobs.add(job.getJobId());
 	
 	}
+	
+	public static int getLucky() {
+        return 7;
+    }
 
 }

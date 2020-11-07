@@ -4,7 +4,7 @@
   <artifactId>JobSorter</artifactId>
   <version>0.0.1-SNAPSHOT</version>
   <build>
-    <sourceDirectory>src</sourceDirectory>
+    <sourceDirectory>src/main</sourceDirectory>
     <plugins>
       <plugin>
         <artifactId>maven-compiler-plugin</artifactId>
@@ -16,4 +16,16 @@
       </plugin>
     </plugins>
   </build>
+  
+     <dependencies>
+
+        <!-- junit 5, unit test -->
+		<dependency>
+    		<groupId>org.junit.jupiter</groupId>
+    		<artifactId>junit-jupiter-api</artifactId>
+    		<version>5.0.0-M5</version>
+   			<scope>test</scope>
+		</dependency>
+    </dependencies>
+    
 </project>
