@@ -5,37 +5,37 @@ import static org.junit.jupiter.api.Assertions.*;
 
 import org.junit.jupiter.api.Test;
 
-class TestJobSorterStart {
+class TestJobSorter {
 
 	@Test
 	public void tesCase1() throws Exception {
 		String[][] processedUserInput = { { "a" } };
-		assertEquals("a", JobSorterStart.jobHandler(processedUserInput));
+		assertEquals("a", JobSorter.jobHandler(processedUserInput));
 	}
 
 	@Test
 	public void tesCase2() throws Exception {
 		String[][] processedUserInput = { { "a" }, { "b" }, { "c" } };
-		assertEquals("cba", JobSorterStart.jobHandler(processedUserInput));
+		assertEquals("cba", JobSorter.jobHandler(processedUserInput));
 	}
 
 	@Test
 	public void tesCase3() throws Exception {
 		String[][] processedUserInput = { { "a" }, { "b", "c" }, { "c" } };
-		assertEquals("cba", JobSorterStart.jobHandler(processedUserInput));
+		assertEquals("cba", JobSorter.jobHandler(processedUserInput));
 	}
 
 	@Test
 	public void tesCase4() throws Exception {
 		String[][] processedUserInput = { { "a" }, { "b", "c" }, { "c", "f" }, { "d", "a" }, { "e", "b" }, { "f" } };
-		assertEquals("fcbead", JobSorterStart.jobHandler(processedUserInput));
+		assertEquals("fcbead", JobSorter.jobHandler(processedUserInput));
 	}
 
 	@Test
 	public void tesCase5() {
 		String[][] processedUserInput = { { "a" }, { "b" }, { "c", "c" } };
 		try {
-			JobSorterStart.jobHandler(processedUserInput);
+			JobSorter.jobHandler(processedUserInput);
 		} catch (Exception e) {
 			assertEquals("Jobs can’t depend on themselves", e.getMessage());
 		}
@@ -45,7 +45,7 @@ class TestJobSorterStart {
 	public void tesCase6() {
 		String[][] processedUserInput = { { "a" }, { "b", "c" }, { "c", "f" }, { "d", "a" }, { "e" }, { "f", "b" } };
 		try {
-			JobSorterStart.jobHandler(processedUserInput);
+			JobSorter.jobHandler(processedUserInput);
 		} catch (Exception e) {
 			assertEquals("Cyclic dependency", e.getMessage());
 		}

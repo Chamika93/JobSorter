@@ -1,10 +1,11 @@
 package main.onthebeach;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.Scanner;
+import java.util.regex.Pattern;
+
 
 /**
  *  Order a sequence of jobs with the dependencies
@@ -12,29 +13,50 @@ import java.util.HashMap;
  * @author chamika
  *
  */
-public class JobSorterStart {
+public class JobSorter {
 
 	public static void main(String[] args) {
 
 		// Get the user input 
-		/**
-		 * In this format
-		 * 
-		 * a =>
-		 * b => c
-		 * c =>
-		 */
-		
-		
-		// Create an 2 dimensional array
-		/**
-		 * { {a} , {b,c}, {c} }
-		 * 
-		 */
-		String[][] processedUserInput = { { "a" }, { "b", "c" }, { "c" } };
-
-		try {
+		System.out.println(" Please enter the jobs you want to sort below line by line. "
+				+ "If there is a job that needs to be completed before the specifc job denote it after a =>"
+				+ ". \n For an example if 'job a' needs to be completed before 'job b' add it as 'b=>a'");
+				
+		try (Scanner reader = new Scanner(System.in)) {
+						
+			// Iterate to get all the user inputs
+			String x = null;
+			// Create an 2 dimensional array
+			ArrayList<String[]> userInput = new ArrayList<String[]>();
+			
+			do { 
+				
+				if (x != null) {
+					String[] jobsArray = x.split("=>");
+					
+					jobsArray = JobSorterUtilities.formatInput(jobsArray);
+					
+					if(JobSorterUtilities.validateInput(jobsArray)) {
+						userInput.add(jobsArray);
+					}
+					else {
+						System.out.println("Your Input was incorrect please add jobs in 'a' or 'a=>b' format");	
+					}
+					
+				}
+				System.out.println(" \nPlease enter the next job or type exit if you are done adding the jobs");
+				x = reader.nextLine();
+				x.trim();
+				
+			} while (!x.equals("exit"));
+			
+			String[][] processedUserInput = userInput.toArray(new String[0][0]);
+			//String[][] processedUserInput = { { "a" }, { "b", "c" }, { "c" } };
+			
+			// Convert the input to a processed input array
 			String sortedJobs = jobHandler(processedUserInput);
+			System.out.println("Sorted Job Array :"+sortedJobs);
+			
 		} catch (Exception e) {
 			System.out.println("Error Occured "+e.getMessage());
 		}
@@ -42,15 +64,16 @@ public class JobSorterStart {
 	}
 		
 	/**
-	 * Finds the Sorted Job order given a HashMap of jobs 
+	 * Finds the Sorted Job order given the user input as a 2 dimensional array 
 	 * 
-	 * @param allJobs HashMap with all the jobs
-	 * @return Sorted Jobs Arraylist
+	 * @param userInput HashMap with all the jobs
+	 * @return JobOrder Sorted Job Order
+	 * @throws Exception
 	 */
 	public static String jobHandler(String[][] userInput) throws Exception {
 		
 		
-		HashMap<String, Job> allJobs = createJobsFromInputs(userInput);
+		HashMap<String, Job> allJobs = JobSorterUtilities.createJobsFromInputs(userInput);
 		
 		// sorted jobs
 		ArrayList<String> sortedJobs = new ArrayList<String>();
@@ -77,60 +100,22 @@ public class JobSorterStart {
 		
 		return JobOrder;
 	}
-	
-	/**
-	 * 
-	 * 
-	 * 
-	 * @param userInput
-	 * @return
-	 */
-	public static HashMap<String, Job> createJobsFromInputs (String[][] userInput ) throws Exception {
-	   
-		// Iterate user input and create job objects with neighbour jobs
-	
-		HashMap<String, Job> allJobs = new HashMap<String, Job>();
 		
-		for ( int i = 0; i < userInput.length ; i++  ) {
-			
-			if ((userInput[i].length == 2) && userInput[i][0].equals(userInput[i][1])) {
-				throw new Exception("Jobs can’t depend on themselves");
-			}
-			
-			for (int j = 0; j < userInput[i].length ; j++) {
-					
-				String value = userInput[i][j];
-				
-				if (allJobs.containsKey(value) && j==1) {
-					allJobs.get(value).addNextJob(userInput[i][0]);
-				}
-				
-				if(!allJobs.containsKey(value)) {
-					Job tmpJob = new Job (value);
-					if(j == 1) {
-						tmpJob.addNextJob(userInput[i][0]);
-					}
-					allJobs.put(value, tmpJob);
-				}
-				
-			}
-		}
-		return allJobs;		
-	}
-	
-	
 	/**
 	 * Visit a job and visit the neighbour jobs recursively  
 	 * Return if it is a already visited job 
 	 * If there are no neighbour nodes or all the nodes are visited add the node to sorted jobs
 	 * 
-	 * @param job            A job with neighbour jobs
-	 * @param sortedJobs     Sorted Jobs
-	 * @param visitedJobs    Already Visited Jobs
-	 * @param allJobs        Hash map of all the jobs
+	 * @param job            		A job with neighbour jobs
+	 * @param sortedJobs     		Sorted Jobs
+	 * @param visitedJobs    		Already Visited Jobs
+	 * @param uniquelyVisitedJobs   Uniquely Visited Jobs to identify circular dependencies
+	 * @param allJobs        		Hash map of all the jobs
+	 * @throws Exception     		if there is a job dependent on it self
 	 */
 	public static void vistJob ( Job job, ArrayList<String> sortedJobs, ArrayList<String> visitedJobs, ArrayList<String> uniquelyVisitedJobs, HashMap<String, Job> allJobs ) throws Exception {
 		
+		// Check for Cyclic dependencies
 		if (uniquelyVisitedJobs.contains(job.getJobId())) {
 			throw new Exception("Cyclic dependency");
 		} else {
@@ -141,8 +126,6 @@ public class JobSorterStart {
 		if (visitedJobs.contains(job.getJobId())) {
 			return;
 		}
-		
-		// Need to identify circular dependencies and throw error
 		
 		visitedJobs.add(job.getJobId());
 		
@@ -155,5 +138,4 @@ public class JobSorterStart {
 		sortedJobs.add(job.getJobId());
 	
 	}
-
 }
