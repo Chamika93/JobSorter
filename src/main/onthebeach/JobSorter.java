@@ -25,14 +25,14 @@ public class JobSorter {
 		try (Scanner reader = new Scanner(System.in)) {
 						
 			// Iterate to get all the user inputs
-			String x = null;
+			String inputString = null;
 			// Create an 2 dimensional array
 			ArrayList<String[]> userInput = new ArrayList<String[]>();
 			
 			do { 
 				
-				if (x != null) {
-					String[] jobsArray = x.split("=>");
+				if (inputString != null) {
+					String[] jobsArray = inputString.split("=>");
 					
 					jobsArray = JobSorterUtilities.formatInput(jobsArray);
 					
@@ -45,17 +45,16 @@ public class JobSorter {
 					
 				}
 				System.out.println(" \nPlease enter the next job or type exit if you are done adding the jobs");
-				x = reader.nextLine();
-				x.trim();
+				inputString = reader.nextLine();
+				inputString.trim();
 				
-			} while (!x.equals("exit"));
+			} while (!inputString.equals("exit"));
 			
 			String[][] processedUserInput = userInput.toArray(new String[0][0]);
-			//String[][] processedUserInput = { { "a" }, { "b", "c" }, { "c" } };
 			
 			// Convert the input to a processed input array
 			String sortedJobs = jobHandler(processedUserInput);
-			System.out.println("Sorted Job Array :"+sortedJobs);
+			System.out.println("Sorted Job Order is :"+sortedJobs);
 			
 		} catch (Exception e) {
 			System.out.println("Error Occured "+e.getMessage());
@@ -111,7 +110,7 @@ public class JobSorter {
 	 * @param visitedJobs    		Already Visited Jobs
 	 * @param uniquelyVisitedJobs   Uniquely Visited Jobs to identify circular dependencies
 	 * @param allJobs        		Hash map of all the jobs
-	 * @throws Exception     		if there is a job dependent on it self
+	 * @throws Exception     		if there is a cyclic dependency
 	 */
 	public static void vistJob ( Job job, ArrayList<String> sortedJobs, ArrayList<String> visitedJobs, ArrayList<String> uniquelyVisitedJobs, HashMap<String, Job> allJobs ) throws Exception {
 		
